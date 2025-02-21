@@ -14,8 +14,10 @@ First Question, From random simulation, is it player 1 and player 2 have a same 
 The simulation of random game show that there are no huge difference in win rate of the player.
 
 Second Question, Player one is the first player to move. is there an advantages that can draw from it?
-![image](https://github.com/user-attachments/assets/8a1db0dd-4bde-4469-a952-b2bb39d4b9bd)
+![image](https://github.com/user-attachments/assets/873f35c6-58f5-4375-96de-5660aa3af1d0)
 
 
 
-It look like that the Win rate of player one (which in this case the player that move first) falls higher toward the centre of the board. D tile have the best percentage of WR that hold by player one (55,06%). So, the answer that we can learn is as player one, we should always play D square
+
+
+It look like that the Win rate of player one (which in this case the player that move first) falls higher toward the centre of the board. D tile have the best percentage of WR that hold by player one (55,06%). So, the answer that we first learn is as player one, we should always play D tiles
