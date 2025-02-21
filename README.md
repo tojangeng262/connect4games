@@ -20,4 +20,4 @@ The simulation of random game show that there are no huge difference in win rate
 
 
 
-It look like that the Win rate of player one (which in this case the player that move first) falls higher toward the centre of the board. D tile have the best percentage of WR that hold by player one (55,06%). So, the answer that we first learn is as player one, we should always play D tiles
+It look like that the Win rate of player one (which in this case the player that move first) increace higher toward the centre of the board. D tile have the best percentage of WR that hold by player one (55,06%). So, the answer that we first learn is as player one, we should always play D tiles
