@@ -1,4 +1,4 @@
-# connect4games
+**#connect4games**
 i try to analyze how to be unbeatable in 4 connect games. i play it with my friend and it feels good if you can always win everytime right?
 
 #Games_simulation
@@ -6,14 +6,14 @@ i using python to simulated the games many times. the code is on the connect4sim
 
 Here's my first approach for the data
 
-First Question, From random simulation, is it player 1 and player 2 have a same chance to win the game?
+**First Question**, From random simulation, is it player 1 and player 2 have a same chance to win the game?
 ![image](https://github.com/user-attachments/assets/e2082dc1-ae90-48ae-9dd8-f2b7bd893dfe)
 
 
 
 The simulation of random game show that there are no huge difference in win rate of the player.
 
-Second Question, Player one is the first player to move. is there an advantages that can draw from it?
+**Second Question**, Player one is the first player to move. is there an advantages that can draw from it?
 ![image](https://github.com/user-attachments/assets/873f35c6-58f5-4375-96de-5660aa3af1d0)
 
 
