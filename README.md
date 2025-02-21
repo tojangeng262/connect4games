@@ -13,7 +13,7 @@ Here's my first approach for the data
 
 The simulation of random game show that there are no huge difference in win rate of the player.
 
-**Second Question**, Player one is the first player to move. is there an advantages that can draw from it?
+**Second Question**, Player one is the first player to move. is there an advantages that can drawn from it?
 ![image](https://github.com/user-attachments/assets/873f35c6-58f5-4375-96de-5660aa3af1d0)
 
 
