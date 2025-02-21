@@ -7,7 +7,8 @@ i using python to simulated the games many times. the code is on the connect4sim
 Here's my first approach for the data
 
 First Question, From random simulation, is it player 1 and player 2 have a same chance to win the game?
-![image](https://github.com/user-attachments/assets/d2723aa0-1003-4d55-b669-13e210a9f5d3)
+![image](https://github.com/user-attachments/assets/e2082dc1-ae90-48ae-9dd8-f2b7bd893dfe)
+
 
 
 The simulation of random game show that there are no huge difference in win rate of the player.
