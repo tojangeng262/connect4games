@@ -1,7 +1,7 @@
 #For the next thing im using bot for simulation. 
 For the simulation, First, i defined about the **game board and the game condition**. Heres the code i used
     
-SimpleBotSimulation/Updateconnect4game_class
+[a relative link](Connect4game_class)
 
 **How This Setup Works**
 
