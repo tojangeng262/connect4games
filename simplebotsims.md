@@ -1,6 +1,5 @@
 #For the next thing im using bot for simulation. 
 For the simulation, First, i defined about the game board and the game condition. Heres the code i used
-
     
     class Connect4Game:
         def __init__(self, rows=6, columns=7):
@@ -126,21 +125,17 @@ For the simulation, First, i defined about the game board and the game condition
                 json.dump(self.move_log, f, indent=4)
             print(f"Game log saved to {filename}")
     
+How This Setup Works
+-Board Initialization:
+The Connect4Game class sets up a 6x7 board (by default), initializing all cells to 0 (empty).
 
+-Move Execution and Notation:
+make_move(column): Checks if a move in the given column is valid, finds the next open row, places the piece, and logs the move with the move number, player, column, row, and timestamp.
+winning_move(piece): Checks the board for any horizontal, vertical, or diagonal win conditions for the specified piece.
 
+-Logging and Analysis:
+All moves are recorded in the move_log list. Once the game ends (or after each game), we can call save_game_log() to save the log as a JSON file for later analysis.
 
+Visualization:
+print_board() prints the current board state, making it easy to track the game's progression in the console.
 
-
-
-
-
-
-
-
-
-There are 4 bot that i use in this simulation. this is the list of the bot
-1. RandomBot
-2. HeuristicBot
-3. MinimaxBot
-4. MCTSBot
-I using some rules for every bot, like for the first simulation, 2 second is the most longer time that it have to think.
