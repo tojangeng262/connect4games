@@ -18,7 +18,7 @@ All moves are recorded in the move_log list. Once the game ends (or after each g
 Visualization:
 print_board() prints the current board state, making it easy to track the game's progression in the console.
 
-    After complete the code of game setup, i create a class for bot. this is to make all the bots moves is recorded in the same way as the game logs.
+After complete the code of game setup, i create a class for bot. this is to make all the bots moves is recorded in the same way as the game logs.
 
 **Standard Bot Interface and Move Format**
 
