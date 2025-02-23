@@ -1,7 +1,7 @@
 #For the next thing im using bot for simulation. 
     For the simulation, First, i defined about the **game board and the game condition**. Heres the code i used
     
-[You can see it here!!!](Connect4game_class)
+[class_connect4game](Connect4game_class)
 
 **How This Setup Works**
 
@@ -55,6 +55,6 @@ Although different bots may have different strategies (random, heuristic, minima
 Graceful Handling: In case the bot's logic somehow selects an invalid move, it should catch that error and select another valid move.
 Time Constraints (if applicable): If you plan on having a time limit per move, all bots should adhere to the same time constraints.
 
-For the code, you can see it here: 
+For the code, you can see it here: [class_bot](bot_class)
 
 
