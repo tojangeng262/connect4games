@@ -1,0 +1,93 @@
+class HeuristicBot(Bot):
+    def _get_next_open_row(self, board, col):
+        """
+        Given a board state (a 2D list) and a column,
+        return the next open row (from bottom) in that column.
+        """
+        for r in range(len(board) - 1, -1, -1):
+            if board[r][col] == 0:
+                return r
+        return None
+
+    def _winning_move(self, board, piece, rows, columns):
+        """
+        Check if placing a piece on the given board results in a win.
+        This function mirrors the winning_move checks in the game class.
+        """
+        # Check horizontal locations for win
+        for r in range(rows):
+            for c in range(columns - 3):
+                if (board[r][c] == piece and board[r][c+1] == piece and
+                    board[r][c+2] == piece and board[r][c+3] == piece):
+                    return True
+
+        # Check vertical locations for win
+        for r in range(rows - 3):
+            for c in range(columns):
+                if (board[r][c] == piece and board[r+1][c] == piece and
+                    board[r+2][c] == piece and board[r+3][c] == piece):
+                    return True
+
+        # Check positively sloped diagonals
+        for r in range(rows - 3):
+            for c in range(columns - 3):
+                if (board[r][c] == piece and board[r+1][c+1] == piece and
+                    board[r+2][c+2] == piece and board[r+3][c+3] == piece):
+                    return True
+
+        # Check negatively sloped diagonals
+        for r in range(3, rows):
+            for c in range(columns - 3):
+                if (board[r][c] == piece and board[r-1][c+1] == piece and
+                    board[r-2][c+2] == piece and board[r-3][c+3] == piece):
+                    return True
+
+        return False
+
+    def choose_move(self, game):
+        """
+        Implements the heuristic decision-making:
+        1. Check for an immediate winning move.
+        2. Check for an immediate move to block the opponent.
+        3. Prefer the center column if available.
+        4. Otherwise, choose a column closest to the center.
+        Returns a valid column number.
+        """
+        valid_columns = [col for col in range(game.columns) if game.is_valid_move(col)]
+
+        # 1. Check for an immediate winning move.
+        for col in valid_columns:
+            board_copy = [row[:] for row in game.board]  # deep copy of the board
+            row = self._get_next_open_row(board_copy, col)
+            if row is not None:
+                board_copy[row][col] = self.player_id
+                if self._winning_move(board_copy, self.player_id, game.rows, game.columns):
+                    return col
+
+        # 2. Check for a move that blocks the opponent's win.
+        opponent = 2 if self.player_id == 1 else 1
+        for col in valid_columns:
+            board_copy = [row[:] for row in game.board]
+            row = self._get_next_open_row(board_copy, col)
+            if row is not None:
+                board_copy[row][col] = opponent
+                if self._winning_move(board_copy, opponent, game.rows, game.columns):
+                    return col
+
+        # 3. Prefer the center column if it's available.
+        center = game.columns // 2
+        if center in valid_columns:
+            return center
+
+        # 4. Otherwise, choose the column that is closest to the center.
+        best_score = -float('inf')
+        best_col = None
+        for col in valid_columns:
+            # A simple scoring: the closer to center, the higher the score.
+            score = -abs(col - center)
+            if score > best_score:
+                best_score = score
+                best_col = col
+
+        # Fallback in case best_col is None (should not happen if valid_columns is not empty)
+        return best_col if best_col is not None else random.choice(valid_columns)
