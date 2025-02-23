@@ -1,0 +1,216 @@
+class MinimaxBot(Bot):
+    def __init__(self, player_id, max_depth=None):
+        """
+        Initialize the MinimaxBot.
+        - player_id: The player's id (1 or 2).
+        - max_depth: Optional fixed maximum depth. If None, iterative deepening runs until time is up.
+        """
+        super().__init__(player_id)
+        self.max_depth = max_depth
+
+    def choose_move(self, game):
+        """
+        Uses iterative deepening minimax search with alpha-beta pruning to choose a move.
+        The bot has a 2-second time limit per move.
+        Returns a valid column number.
+        """
+        start_time = time.time()
+        time_limit = 2.0  # seconds
+        valid_locations = [col for col in range(game.columns) if game.is_valid_move(col)]
+        if not valid_locations:
+            raise Exception("No valid moves available!")
+        best_move = random.choice(valid_locations)  # Fallback in case time runs out quickly
+        current_depth = 1
+
+        try:
+            # Iterative deepening loop
+            while True:
+                # If a max_depth is set and we've reached it, break.
+                if self.max_depth is not None and current_depth > self.max_depth:
+                    break
+
+                score, column = self.minimax(game.board, current_depth, -float('inf'), float('inf'),
+                                               True, start_time, time_limit, game)
+                # Only update if we got a valid column and we're still within time.
+                if time.time() - start_time < time_limit and column is not None:
+                    best_move = column
+
+                current_depth += 1
+        except TimeoutError:
+            # Time limit exceeded; use the best move from the last completed iteration.
+            pass
+
+        return best_move
+
+    def minimax(self, board, depth, alpha, beta, maximizingPlayer, start_time, time_limit, game):
+        """
+        Recursive minimax function with alpha-beta pruning.
+        If the time limit is exceeded, a TimeoutError is raised.
+        Returns a tuple (score, column).
+        """
+        # Check the time limit
+        if time.time() - start_time >= time_limit:
+            raise TimeoutError
+
+        valid_locations = self.get_valid_locations(board, game)
+        is_terminal = self.is_terminal_node(board, game)
+        if depth == 0 or is_terminal:
+            if is_terminal:
+                if self.winning_move(board, self.player_id, game):
+                    return (float('inf'), None)
+                elif self.winning_move(board, 2 if self.player_id == 1 else 1, game):
+                    return (-float('inf'), None)
+                else:
+                    return (0, None)  # Game is over (draw)
+            else:
+                return (self.score_position(board, self.player_id, game), None)
+
+        if maximizingPlayer:
+            value = -float('inf')
+            best_column = random.choice(valid_locations)
+            for col in valid_locations:
+                row = self.get_next_open_row(board, col, game.rows)
+                if row is not None:
+                    board_copy = [r[:] for r in board]  # Deep copy the board
+                    board_copy[row][col] = self.player_id
+                    new_score, _ = self.minimax(board_copy, depth - 1, alpha, beta,
+                                                False, start_time, time_limit, game)
+                    if new_score > value:
+                        value = new_score
+                        best_column = col
+                    alpha = max(alpha, value)
+                    if alpha >= beta:
+                        break
+            return value, best_column
+        else:
+            value = float('inf')
+            best_column = random.choice(valid_locations)
+            opponent = 2 if self.player_id == 1 else 1
+            for col in valid_locations:
+                row = self.get_next_open_row(board, col, game.rows)
+                if row is not None:
+                    board_copy = [r[:] for r in board]
+                    board_copy[row][col] = opponent
+                    new_score, _ = self.minimax(board_copy, depth - 1, alpha, beta,
+                                                True, start_time, time_limit, game)
+                    if new_score < value:
+                        value = new_score
+                        best_column = col
+                    beta = min(beta, value)
+                    if alpha >= beta:
+                        break
+            return value, best_column
+
+    def get_valid_locations(self, board, game):
+        """Return a list of column indices where a move is valid."""
+        valid_locations = []
+        for col in range(game.columns):
+            if board[0][col] == 0:
+                valid_locations.append(col)
+        return valid_locations
+
+    def get_next_open_row(self, board, col, rows):
+        """Return the next open row in the given column."""
+        for r in range(rows - 1, -1, -1):
+            if board[r][col] == 0:
+                return r
+        return None
+
+    def winning_move(self, board, piece, game):
+        """Check whether the given board has a winning move for the specified piece."""
+        # Check horizontal locations for win
+        for r in range(game.rows):
+            for c in range(game.columns - 3):
+                if board[r][c] == piece and board[r][c+1] == piece and \
+                   board[r][c+2] == piece and board[r][c+3] == piece:
+                    return True
+
+        # Check vertical locations for win
+        for r in range(game.rows - 3):
+            for c in range(game.columns):
+                if board[r][c] == piece and board[r+1][c] == piece and \
+                   board[r+2][c] == piece and board[r+3][c] == piece:
+                    return True
+
+        # Check positively sloped diagonals
+        for r in range(game.rows - 3):
+            for c in range(game.columns - 3):
+                if board[r][c] == piece and board[r+1][c+1] == piece and \
+                   board[r+2][c+2] == piece and board[r+3][c+3] == piece:
+                    return True
+
+        # Check negatively sloped diagonals
+        for r in range(3, game.rows):
+            for c in range(game.columns - 3):
+                if board[r][c] == piece and board[r-1][c+1] == piece and \
+                   board[r-2][c+2] == piece and board[r-3][c+3] == piece:
+                    return True
+
+        return False
+
+    def is_terminal_node(self, board, game):
+        """Returns True if the board state is terminal (win or draw)."""
+        return (self.winning_move(board, self.player_id, game) or
+                self.winning_move(board, 2 if self.player_id == 1 else 1, game) or
+                len(self.get_valid_locations(board, game)) == 0)
+
+    def score_position(self, board, piece, game):
+        """
+        Evaluate the board and return a score from the perspective of the given piece.
+        A simple heuristic: center control plus counting potential windows.
+        """
+        score = 0
+        center = game.columns // 2
+        center_array = [board[r][center] for r in range(game.rows)]
+        center_count = center_array.count(piece)
+        score += center_count * 3
+
+        # Score Horizontal
+        for r in range(game.rows):
+            row_array = board[r]
+            for c in range(game.columns - 3):
+                window = row_array[c:c+4]
+                score += self.evaluate_window(window, piece)
+
+        # Score Vertical
+        for c in range(game.columns):
+            col_array = [board[r][c] for r in range(game.rows)]
+            for r in range(game.rows - 3):
+                window = col_array[r:r+4]
+                score += self.evaluate_window(window, piece)
+
+        # Score positively sloped diagonal
+        for r in range(game.rows - 3):
+            for c in range(game.columns - 3):
+                window = [board[r+i][c+i] for i in range(4)]
+                score += self.evaluate_window(window, piece)
+
+        # Score negatively sloped diagonal
+        for r in range(3, game.rows):
+            for c in range(game.columns - 3):
+                window = [board[r-i][c+i] for i in range(4)]
+                score += self.evaluate_window(window, piece)
+
+        return score
+
+    def evaluate_window(self, window, piece):
+        """
+        Evaluate a window of four cells and return a score.
+        +100 for 4 in a row, +5 for 3 with an empty, +2 for 2 with two empties.
+        Subtract if the opponent is close to winning.
+        """
+        score = 0
+        opponent = 2 if piece == 1 else 1
+
+        if window.count(piece) == 4:
+            score += 100
+        elif window.count(piece) == 3 and window.count(0) == 1:
+            score += 5
+        elif window.count(piece) == 2 and window.count(0) == 2:
+            score += 2
+
+        if window.count(opponent) == 3 and window.count(0) == 1:
+            score -= 4
+
+        return score
+
