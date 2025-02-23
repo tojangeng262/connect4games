@@ -1,5 +1,5 @@
 #For the next thing im using bot for simulation. 
-For the simulation, First, i defined about the game board and the game condition. Heres the code i used
+For the simulation, First, i defined about the **game board and the game condition**. Heres the code i used
     
     class Connect4Game:
         def __init__(self, rows=6, columns=7):
@@ -125,7 +125,7 @@ For the simulation, First, i defined about the game board and the game condition
                 json.dump(self.move_log, f, indent=4)
             print(f"Game log saved to {filename}")
     
-How This Setup Works
+**How This Setup Works**
 -Board Initialization:
 The Connect4Game class sets up a 6x7 board (by default), initializing all cells to 0 (empty).
 
@@ -138,4 +138,6 @@ All moves are recorded in the move_log list. Once the game ends (or after each g
 
 Visualization:
 print_board() prints the current board state, making it easy to track the game's progression in the console.
+
+
 
