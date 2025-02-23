@@ -1,0 +1,30 @@
+import datetime
+
+class Bot:
+    def __init__(self, player_id):
+        """
+        Initialize the bot with its player id (1 or 2).
+        """
+        self.player_id = player_id
+
+    def choose_move(self, game):
+        """
+        Given the current game state, return a valid column number.
+        This method should be overridden by specific bot implementations.
+        """
+        raise NotImplementedError("This method should be implemented by subclasses.")
+
+    def format_move(self, game, column):
+        """
+        Given the chosen column and game state, determine the row where the piece will land.
+        Return a move dictionary in the standardized format.
+        """
+        row = game.get_next_open_row(column)
+        move_entry = {
+            "move_number": len(game.move_log) + 1,
+            "player": self.player_id,
+            "column": column,
+            "row": row,
+            "timestamp": datetime.datetime.now().isoformat()
+        }
+        return move_entry
