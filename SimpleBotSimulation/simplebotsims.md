@@ -150,5 +150,30 @@ get_next_open_row: Finds the next available row in a given column.
 winning_move: Checks for win conditions on the board, similar to our game’s win-check logic.
 
 
+##________________________________________________________________________________________________________________________________##
+
+The last thing i used is make the class for the simulation. [Running_simulation](run_game_class) is the code that i used.
+
+
+**How This Simulation Script Works**
+
+-run_game Function:
+
+Initializes a new Connect4Game for each game.
+Instantiates two bots with the appropriate player_id based on the ordering parameter.
+Runs the game loop until the game ends (either by a win or when the board is full).
+Determines the winner from the last move and packages the game’s move log along with metadata (including bot IDs, game number, and ordering) into a dictionary.
+
+-run_simulation Function:
+
+Sets up a directory (simulation_game_logs) where each game’s log is saved as a JSON file.
+Iterates over each distinct pairing of the four bots. For each pairing, it runs 1000 games (500 with one ordering, 500 with the reversed ordering) so that each bot plays as Player 1 in 50% of the games.
+Each game’s log is saved with a filename that includes the bot names, the ordering, and the game number.
+
+-Execution:
+
+Running this script will start the simulation and, once complete, print the total number of games played (which should be 6000 if there are 6 distinct pairings).
+
+**Note**: i run this script like 30 hours, and its maybe was caused by two thing. first is the code that i use is still inefficient. the second one maybe is the time limit of 2 second, with resulted in the long time of each game when the MinimaxBot and MCSTBot play agains each other. i still dont test how effective the bot is, against another bot that already available since the main objective of my code is to get a game notation to analyze later.
 
 
