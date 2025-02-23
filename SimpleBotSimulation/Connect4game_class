@@ -1,9 +1,5 @@
-import os
 import json
-import random
-import time
 import datetime
-import copy
 
 class Connect4Game:
     def __init__(self, rows=6, columns=7):
