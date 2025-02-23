@@ -1,0 +1,179 @@
+{
+    "metadata": {
+        "bot1": "HeuristicBot",
+        "bot2": "MCTSBot",
+        "game_number": 1,
+        "ordering": "normal",
+        "result": "MCTSBot"
+    },
+    "move_log": [
+        {
+            "move_number": 1,
+            "player": 1,
+            "column": 3,
+            "row": 5,
+            "timestamp": "2025-02-21T21:51:54.593721"
+        },
+        {
+            "move_number": 2,
+            "player": 2,
+            "column": 3,
+            "row": 4,
+            "timestamp": "2025-02-21T21:51:56.594151"
+        },
+        {
+            "move_number": 3,
+            "player": 1,
+            "column": 3,
+            "row": 3,
+            "timestamp": "2025-02-21T21:51:56.594704"
+        },
+        {
+            "move_number": 4,
+            "player": 2,
+            "column": 4,
+            "row": 5,
+            "timestamp": "2025-02-21T21:51:58.595224"
+        },
+        {
+            "move_number": 5,
+            "player": 1,
+            "column": 3,
+            "row": 2,
+            "timestamp": "2025-02-21T21:51:58.595455"
+        },
+        {
+            "move_number": 6,
+            "player": 2,
+            "column": 4,
+            "row": 4,
+            "timestamp": "2025-02-21T21:52:00.595847"
+        },
+        {
+            "move_number": 7,
+            "player": 1,
+            "column": 3,
+            "row": 1,
+            "timestamp": "2025-02-21T21:52:00.596357"
+        },
+        {
+            "move_number": 8,
+            "player": 2,
+            "column": 3,
+            "row": 0,
+            "timestamp": "2025-02-21T21:52:02.596629"
+        },
+        {
+            "move_number": 9,
+            "player": 1,
+            "column": 2,
+            "row": 5,
+            "timestamp": "2025-02-21T21:52:02.596847"
+        },
+        {
+            "move_number": 10,
+            "player": 2,
+            "column": 2,
+            "row": 4,
+            "timestamp": "2025-02-21T21:52:04.597077"
+        },
+        {
+            "move_number": 11,
+            "player": 1,
+            "column": 2,
+            "row": 3,
+            "timestamp": "2025-02-21T21:52:04.597302"
+        },
+        {
+            "move_number": 12,
+            "player": 2,
+            "column": 4,
+            "row": 3,
+            "timestamp": "2025-02-21T21:52:06.597539"
+        },
+        {
+            "move_number": 13,
+            "player": 1,
+            "column": 4,
+            "row": 2,
+            "timestamp": "2025-02-21T21:52:06.597733"
+        },
+        {
+            "move_number": 14,
+            "player": 2,
+            "column": 0,
+            "row": 5,
+            "timestamp": "2025-02-21T21:52:08.597981"
+        },
+        {
+            "move_number": 15,
+            "player": 1,
+            "column": 2,
+            "row": 2,
+            "timestamp": "2025-02-21T21:52:08.598217"
+        },
+        {
+            "move_number": 16,
+            "player": 2,
+            "column": 2,
+            "row": 1,
+            "timestamp": "2025-02-21T21:52:10.599049"
+        },
+        {
+            "move_number": 17,
+            "player": 1,
+            "column": 2,
+            "row": 0,
+            "timestamp": "2025-02-21T21:52:10.599909"
+        },
+        {
+            "move_number": 18,
+            "player": 2,
+            "column": 4,
+            "row": 1,
+            "timestamp": "2025-02-21T21:52:12.600076"
+        },
+        {
+            "move_number": 19,
+            "player": 1,
+            "column": 4,
+            "row": 0,
+            "timestamp": "2025-02-21T21:52:12.600360"
+        },
+        {
+            "move_number": 20,
+            "player": 2,
+            "column": 0,
+            "row": 4,
+            "timestamp": "2025-02-21T21:52:14.600732"
+        },
+        {
+            "move_number": 21,
+            "player": 1,
+            "column": 1,
+            "row": 5,
+            "timestamp": "2025-02-21T21:52:14.600943"
+        },
+        {
+            "move_number": 22,
+            "player": 2,
+            "column": 0,
+            "row": 3,
+            "timestamp": "2025-02-21T21:52:16.601111"
+        },
+        {
+            "move_number": 23,
+            "player": 1,
+            "column": 0,
+            "row": 2,
+            "timestamp": "2025-02-21T21:52:16.601436"
+        },
+        {
+            "move_number": 24,
+            "player": 2,
+            "column": 1,
+            "row": 4,
+            "timestamp": "2025-02-21T21:52:18.601627"
+        }
+    ]
+}
