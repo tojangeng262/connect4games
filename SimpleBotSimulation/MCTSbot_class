@@ -1,0 +1,137 @@
+class MCTSBot(Bot):
+    def choose_move(self, game):
+        """
+        Uses Monte Carlo Tree Search (MCTS) to select a move.
+        Runs simulations for up to 2 seconds and then returns the move (column)
+        with the highest win ratio.
+        """
+        time_limit = 2.0  # seconds per move
+        start_time = time.time()
+        
+        # Get list of valid moves from current board.
+        valid_moves = self.get_valid_moves(game.board, game)
+        if not valid_moves:
+            raise Exception("No valid moves available!")
+        
+        # Initialize simulation results for each valid move:
+        # Each key maps to a tuple: [wins, simulations]
+        results = {col: [0, 0] for col in valid_moves}
+        
+        # Run simulations until time limit is reached.
+        while time.time() - start_time < time_limit:
+            for col in valid_moves:
+                # Check time at each simulation iteration.
+                if time.time() - start_time >= time_limit:
+                    break
+                # Copy the current board so we don't affect the real game.
+                board_copy = copy.deepcopy(game.board)
+                row = self.get_next_open_row(board_copy, col, game.rows)
+                if row is None:
+                    continue  # Should not happen as move is valid.
+                board_copy[row][col] = self.player_id
+                # Set the next player for the simulation.
+                current_player = 2 if self.player_id == 1 else 1
+                # Run a random simulation (playout) from this board state.
+                outcome = self.simulate_random_game(board_copy, current_player, game)
+                # Outcome is from the perspective of our bot:
+                # 1 for win, 0.5 for draw, 0 for loss.
+                results[col][0] += outcome
+                results[col][1] += 1
+
+        # Choose the move with the best win ratio.
+        best_move = None
+        best_ratio = -float('inf')
+        for col in results:
+            wins, simulations = results[col]
+            if simulations > 0:
+                ratio = wins / simulations
+                # Debug print for simulation results:
+                # print(f"Col {col}: {wins}/{simulations} = {ratio:.3f}")
+                if ratio > best_ratio:
+                    best_ratio = ratio
+                    best_move = col
+
+        # Fallback: if no simulations were run (should not happen), choose randomly.
+        if best_move is None:
+            best_move = random.choice(valid_moves)
+        return best_move
+
+    def simulate_random_game(self, board, current_player, game):
+        """
+        Simulate a random playout (i.e. play random moves until terminal state).
+        Returns:
+            1 if the outcome is a win for self.player_id,
+            0.5 if the outcome is a draw,
+            0 if the outcome is a loss.
+        """
+        # Continue simulation until a terminal state is reached.
+        while True:
+            valid_moves = self.get_valid_moves(board, game)
+            if not valid_moves:
+                # No more moves: board full, treat as draw.
+                return 0.5
+            # Choose a random move.
+            col = random.choice(valid_moves)
+            row = self.get_next_open_row(board, col, game.rows)
+            if row is None:
+                continue
+            board[row][col] = current_player
+            # Check if this move wins the game.
+            if self.winning_move(board, current_player, game):
+                # Return outcome from the perspective of our bot.
+                return 1 if current_player == self.player_id else 0
+            # Check for draw: if board is full.
+            if all(board[0][c] != 0 for c in range(game.columns)):
+                return 0.5
+            # Switch players.
+            current_player = 2 if current_player == 1 else 1
+
+    def get_valid_moves(self, board, game):
+        """Return a list of valid column indices where a move can be made."""
+        valid_moves = []
+        for col in range(game.columns):
+            if board[0][col] == 0:
+                valid_moves.append(col)
+        return valid_moves
+
+    def get_next_open_row(self, board, col, rows):
+        """Return the next open row in the specified column."""
+        for r in range(rows - 1, -1, -1):
+            if board[r][col] == 0:
+                return r
+        return None
+
+    def winning_move(self, board, piece, game):
+        """
+        Check whether the given board has a winning move for the specified piece.
+        This function mirrors the winning_move logic from our Connect4Game.
+        """
+        # Check horizontal locations for win.
+        for r in range(game.rows):
+            for c in range(game.columns - 3):
+                if (board[r][c] == piece and board[r][c+1] == piece and
+                    board[r][c+2] == piece and board[r][c+3] == piece):
+                    return True
+
+        # Check vertical locations for win.
+        for r in range(game.rows - 3):
+            for c in range(game.columns):
+                if (board[r][c] == piece and board[r+1][c] == piece and
+                    board[r+2][c] == piece and board[r+3][c] == piece):
+                    return True
+
+        # Check positively sloped diagonals.
+        for r in range(game.rows - 3):
+            for c in range(game.columns - 3):
+                if (board[r][c] == piece and board[r+1][c+1] == piece and
+                    board[r+2][c+2] == piece and board[r+3][c+3] == piece):
+                    return True
+
+        # Check negatively sloped diagonals.
+        for r in range(3, game.rows):
+            for c in range(game.columns - 3):
+                if (board[r][c] == piece and board[r-1][c+1] == piece and
+                    board[r-2][c+2] == piece and board[r-3][c+3] == piece):
+                    return True
+
+        return False
