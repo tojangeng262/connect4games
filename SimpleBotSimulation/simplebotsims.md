@@ -57,4 +57,98 @@ Time Constraints (if applicable): If you plan on having a time limit per move, a
 
 For the code, you can see it here: [class_bot](bot_class)
 
+##_________________________________________________________________________________________________________________________________##
+
+For the simulation, i created 4 bot
+Heres all the bot that i used
+
+
+
+**1. Random Bot:**
+
+the code i use is here : [RandomBot]()
+
+What it does: Chooses moves completely at random among the valid options.
+Why: Serves as a baseline and tests if more advanced strategies can consistently beat a “dumb” opponent.
+
+the explanation of the code:
+
+-Building a list of valid columns using the is_valid_move() method from the game.
+-Randomly selecting one of those columns.
+
+
+
+
+**2.Heuristic (Rule-Based) Bot:**
+
+the code i use is here [HeuristicBot]()
+
+What it does: Checks for immediate wins or blocks an opponent’s winning move, and then makes a move based on simple board evaluations (e.g., center column preference).
+Why: Mimics a novice human player with some tactical awareness.
+
+Explanation of the code
+
+
+-Immediate Win Check: For every valid column, the bot simulates placing its piece. If that move wins the game, it is chosen.
+
+-Block Opponent: Next, the bot simulates the opponent's move for every valid column. If the opponent would win with that move, the bot selects that column to block them.
+
+-Center Preference: If no immediate wins or blocks exist, the bot prefers the center column if available.
+
+-Heuristic Preference: Finally, if the center is not available, the bot selects the column closest to the center.
+
+
+
+
+**3.Minimax Bot (with Alpha-Beta Pruning):**
+
+the code i use is here: [MinimaxBot]()
+
+What it does: Uses the minimax algorithm to look several moves ahead, with alpha-beta pruning to optimize the search.
+Variations:
+Depth Variants: Create two versions—one with a shallower search (novice level) and one with a deeper search (expert level).
+Why: Demonstrates a more calculated, strategic approach.
+
+How It Works
+
+-Iterative Deepening with Time Check:
+The choose_move method starts with a depth of 1 and increases the depth as long as there’s time (2 seconds limit). If the time is exceeded (via a TimeoutError raised in the minimax recursion), it returns the best move found in the previous iteration.
+
+-Minimax with Alpha‑Beta Pruning:
+The minimax method recursively evaluates moves. It uses a simple evaluation function (score_position) and checks terminal conditions (win/draw). The search is pruned using the alpha and beta values.
+
+-Heuristic Evaluation:
+The board is scored by giving extra weight to center control and by evaluating all possible windows of four cells on the board.
+
+
+
+
+
+**4.Monte Carlo Tree Search (MCTS) Bot:**
+
+the code i use is here:[MCTSBot]()
+
+What it does: Runs many random simulations from the current board state to statistically evaluate moves.
+Why: Offers a different flavor of decision-making that can mimic human intuition and sometimes find creative strategies.
+
+Explanation
+-Time Constraint:
+The choose_move method uses a loop that runs until 2 seconds have passed. In each iteration, it goes through each valid move, simulates one random playout from that move, and updates the win count and simulation count.
+
+-Simulation Function:
+The simulate_random_game function plays random moves until a terminal state is reached. It returns:
+
+1 if the simulation results in a win for the bot,
+0.5 if the game is a draw,
+0 if it results in a loss.
+
+
+-Helper Methods:
+
+get_valid_moves: Returns all columns where a move is possible.
+get_next_open_row: Finds the next available row in a given column.
+winning_move: Checks for win conditions on the board, similar to our game’s win-check logic.
+
+
+
 
