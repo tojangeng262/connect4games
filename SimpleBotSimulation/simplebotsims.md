@@ -66,7 +66,7 @@ Heres all the bot that i used
 
 **1. Random Bot:**
 
-the code i use is here : [RandomBot]()
+the code i use is here : [RandomBot](RandomBot_class)
 
 What it does: Chooses moves completely at random among the valid options.
 Why: Serves as a baseline and tests if more advanced strategies can consistently beat a “dumb” opponent.
@@ -81,7 +81,7 @@ the explanation of the code:
 
 **2.Heuristic (Rule-Based) Bot:**
 
-the code i use is here [HeuristicBot]()
+the code i use is here [HeuristicBot](HeuristicBot_class)
 
 What it does: Checks for immediate wins or blocks an opponent’s winning move, and then makes a move based on simple board evaluations (e.g., center column preference).
 Why: Mimics a novice human player with some tactical awareness.
@@ -102,7 +102,7 @@ Explanation of the code
 
 **3.Minimax Bot (with Alpha-Beta Pruning):**
 
-the code i use is here: [MinimaxBot]()
+the code i use is here: [MinimaxBot](MinimaxBot_class)
 
 What it does: Uses the minimax algorithm to look several moves ahead, with alpha-beta pruning to optimize the search.
 Variations:
@@ -126,7 +126,7 @@ The board is scored by giving extra weight to center control and by evaluating a
 
 **4.Monte Carlo Tree Search (MCTS) Bot:**
 
-the code i use is here:[MCTSBot]()
+the code i use is here:[MCTSBot](MCTSbot_class)
 
 What it does: Runs many random simulations from the current board state to statistically evaluate moves.
 Why: Offers a different flavor of decision-making that can mimic human intuition and sometimes find creative strategies.
