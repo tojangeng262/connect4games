@@ -1,1 +1,1 @@
-This is the folder to update my [SimpleBotSimulation](connect4games/SimpleBotSimulation)
+This is the folder to update my [SimpleBotSimulation]([connect4games/SimpleBotSimulation](https://github.com/tojangeng262/connect4games/tree/695d0d51fffcc302ad4b825116fc94ffc25f114f/SimpleBotSimulation))
