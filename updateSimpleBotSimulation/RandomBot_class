@@ -1,0 +1,8 @@
+# Random Bot
+class RandomBot(Bot):
+    def choose_move(self, game):
+        valid_columns = [col for col in range(game.columns) if game.is_valid_move(col)]
+        if not valid_columns:
+            raise Exception("No valid moves available!")
+        chosen_column = random.choice(valid_columns)
+        return chosen_column
