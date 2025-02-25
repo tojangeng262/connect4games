@@ -1,0 +1,83 @@
+# Monte Carlo Tree Search Bot
+class MCTSBot(Bot):
+    def choose_move(self, game):
+        time_limit = 2.0
+        start_time = time.time()
+        valid_moves = self.get_valid_moves(game.board, game)
+        if not valid_moves:
+            raise Exception("No valid moves available!")
+        results = {col: [0, 0] for col in valid_moves}
+        while time.time() - start_time < time_limit:
+            for col in valid_moves:
+                if time.time() - start_time >= time_limit:
+                    break
+                board_copy = game.board.copy()
+                row = self.get_next_open_row(board_copy, col, game.rows)
+                if row is None:
+                    continue
+                board_copy[row, col] = self.player_id
+                current_player = 2 if self.player_id == 1 else 1
+                outcome = self.simulate_random_game(board_copy, current_player, game)
+                results[col][0] += outcome
+                results[col][1] += 1
+        best_move = None
+        best_ratio = -float('inf')
+        for col in results:
+            wins, simulations = results[col]
+            if simulations > 0:
+                ratio = wins / simulations
+                if ratio > best_ratio:
+                    best_ratio = ratio
+                    best_move = col
+        if best_move is None:
+            best_move = random.choice(valid_moves)
+        return best_move
+
+    def simulate_random_game(self, board, current_player, game):
+        while True:
+            valid_moves = self.get_valid_moves(board, game)
+            if not valid_moves:
+                return 0.5
+            col = random.choice(valid_moves)
+            row = self.get_next_open_row(board, col, game.rows)
+            if row is None:
+                continue
+            board[row, col] = current_player
+            if self.winning_move(board, current_player, game):
+                return 1 if current_player == self.player_id else 0
+            if np.all(board[0] != 0):
+                return 0.5
+            current_player = 2 if current_player == 1 else 1
+
+    def get_valid_moves(self, board, game):
+        return [col for col in range(game.columns) if board[0, col] == 0]
+
+    def get_next_open_row(self, board, col, rows):
+        col_array = board[:, col]
+        zero_indices = np.where(col_array == 0)[0]
+        if len(zero_indices) > 0:
+            return zero_indices[-1]
+        return None
+
+    def winning_move(self, board, piece, game):
+        for r in range(game.rows):
+            row = board[r]
+            for c in range(game.columns - 3):
+                if np.all(row[c:c+4] == piece):
+                    return True
+        for c in range(game.columns):
+            col = board[:, c]
+            for r in range(game.rows - 3):
+                if np.all(col[r:r+4] == piece):
+                    return True
+        for r in range(game.rows - 3):
+            for c in range(game.columns - 3):
+                window = [board[r+i, c+i] for i in range(4)]
+                if all(x == piece for x in window):
+                    return True
+        for r in range(3, game.rows):
+            for c in range(game.columns - 3):
+                window = [board[r-i, c+i] for i in range(4)]
+                if all(x == piece for x in window):
+                    return True
+        return False
