@@ -1,0 +1,174 @@
+# Minimax Bot
+class MinimaxBot(Bot):
+    def __init__(self, player_id, max_depth=None):
+        super().__init__(player_id)
+        self.max_depth = max_depth
+        self.move_memory = {}
+
+    def choose_move(self, game):
+        start_time = time.time()
+        time_limit = 2.0
+        valid_locations = [col for col in range(game.columns) if game.is_valid_move(col)]
+        if not valid_locations:
+            raise Exception("No valid moves available!")
+        best_move = random.choice(valid_locations)
+        current_depth = 1
+        try:
+            while True:
+                if self.max_depth is not None and current_depth > self.max_depth:
+                    break
+                score, column = self.minimax(game.board, current_depth, -float('inf'), float('inf'),
+                                             True, start_time, time_limit, game)
+                if time.time() - start_time < time_limit and column is not None:
+                    best_move = column
+                current_depth += 1
+        except TimeoutError:
+            pass
+        return best_move
+
+    def minimax(self, board, depth, alpha, beta, maximizingPlayer, start_time, time_limit, game):
+        if time.time() - start_time >= time_limit:
+            raise TimeoutError
+        board_tuple = tuple(map(tuple, board))
+        valid_locations = self.get_valid_locations(board, game)
+        is_terminal = self.is_terminal_node(board, game)
+        if depth == 0 or is_terminal:
+            if is_terminal:
+                if self.winning_move(board, self.player_id, game):
+                    return (float('inf'), None)
+                elif self.winning_move(board, 2 if self.player_id == 1 else 1, game):
+                    return (-float('inf'), None)
+                else:
+                    return (0, None)
+            else:
+                return (self.score_position(board, self.player_id, game), None)
+        if maximizingPlayer:
+            value = -float('inf')
+            best_column = random.choice(valid_locations)
+            sorted_moves = sorted(valid_locations, key=lambda col: self.move_memory.get((board_tuple, col), 0), reverse=True)
+            for col in sorted_moves:
+                row = self.get_next_open_row(board, col, game.rows)
+                if row is not None:
+                    board_copy = board.copy()
+                    board_copy[row, col] = self.player_id
+                    new_score, _ = self.minimax(board_copy, depth - 1, alpha, beta,
+                                                False, start_time, time_limit, game)
+                    if new_score > value:
+                        value = new_score
+                        best_column = col
+                        self.move_memory[(board_tuple, col)] = new_score
+                    else:
+                        self.move_memory[(board_tuple, col)] = -1
+                    alpha = max(alpha, value)
+                    if alpha >= beta:
+                        break
+            return value, best_column
+        else:
+            value = float('inf')
+            best_column = random.choice(valid_locations)
+            sorted_moves = sorted(valid_locations, key=lambda col: self.move_memory.get((board_tuple, col), 0))
+            opponent = 2 if self.player_id == 1 else 1
+            for col in sorted_moves:
+                row = self.get_next_open_row(board, col, game.rows)
+                if row is not None:
+                    board_copy = board.copy()
+                    board_copy[row, col] = opponent
+                    new_score, _ = self.minimax(board_copy, depth - 1, alpha, beta,
+                                                True, start_time, time_limit, game)
+                    if new_score < value:
+                        value = new_score
+                        best_column = col
+                        self.move_memory[(board_tuple, col)] = new_score
+                    else:
+                        self.move_memory[(board_tuple, col)] = 1
+                    beta = min(beta, value)
+                    if alpha >= beta:
+                        break
+            return value, best_column
+
+    def get_valid_locations(self, board, game):
+        return [col for col in range(game.columns) if board[0, col] == 0]
+
+    def get_next_open_row(self, board, col, rows):
+        col_array = board[:, col]
+        zero_indices = np.where(col_array == 0)[0]
+        if len(zero_indices) > 0:
+            return zero_indices[-1]
+        return None
+
+    def winning_move(self, board, piece, game):
+        for r in range(game.rows):
+            row = board[r]
+            for c in range(game.columns - 3):
+                if np.all(row[c:c+4] == piece):
+                    return True
+        for c in range(game.columns):
+            col = board[:, c]
+            for r in range(game.rows - 3):
+                if np.all(col[r:r+4] == piece):
+                    return True
+        for r in range(game.rows - 3):
+            for c in range(game.columns - 3):
+                window = [board[r+i, c+i] for i in range(4)]
+                if all(x == piece for x in window):
+                    return True
+        for r in range(3, game.rows):
+            for c in range(game.columns - 3):
+                window = [board[r-i, c+i] for i in range(4)]
+                if all(x == piece for x in window):
+                    return True
+        return False
+
+    def is_terminal_node(self, board, game):
+        return (self.winning_move(board, self.player_id, game) or
+                self.winning_move(board, 2 if self.player_id == 1 else 1, game) or
+                len(self.get_valid_locations(board, game)) == 0)
+
+    def score_position(self, board, piece, game):
+        score = 0
+        center = game.columns // 2
+        center_array = board[:, center]
+        center_count = (center_array == piece).sum()
+        score += center_count * 3
+        for r in range(game.rows):
+            row_array = board[r]
+            for c in range(game.columns - 3):
+                window = row_array[c:c+4]
+                score += self.evaluate_window(window, piece)
+        for c in range(game.columns):
+            col_array = board[:, c]
+            for r in range(game.rows - 3):
+                window = col_array[r:r+4]
+                score += self.evaluate_window(window, piece)
+        for r in range(game.rows - 3):
+            for c in range(game.columns - 3):
+                window = [board[r+i, c+i] for i in range(4)]
+                score += self.evaluate_window(window, piece)
+        for r in range(3, game.rows):
+            for c in range(game.columns - 3):
+                window = [board[r-i, c+i] for i in range(4)]
+                score += self.evaluate_window(window, piece)
+        return score
+
+    
+    def evaluate_window(self, window, piece):
+        score = 0
+        opponent = 2 if piece == 1 else 1
+        # Ensure window is a NumPy array
+        if not isinstance(window, np.ndarray):
+            window = np.array([window])
+        piece_count = (window == piece).sum()
+        empty_count = (window == 0).sum()
+        opponent_count = (window == opponent).sum()
+        
+        # Scoring logic
+        if piece_count == 4:
+            score += 100
+        elif piece_count == 3 and empty_count == 1:
+            score += 5
+        elif piece_count == 2 and empty_count == 2:
+            score += 2
+        if opponent_count == 3 and empty_count == 1:
+            score -= 4
+        
+        return score
