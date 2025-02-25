@@ -1,0 +1,90 @@
+# Connect 4 Game Class
+class Connect4Game:
+    def __init__(self, rows=6, columns=7):
+        self.rows = rows
+        self.columns = columns
+        self.board = np.zeros((rows, columns), dtype=int)
+        self.move_log = []
+        self.current_player = 1
+        self.game_over = False
+
+    def is_valid_move(self, column):
+        return self.board[0, column] == 0
+
+    def get_next_open_row(self, column):
+        col_array = self.board[:, column]
+        zero_indices = np.where(col_array == 0)[0]
+        if len(zero_indices) > 0:
+            return zero_indices[-1]
+        return None
+
+    def drop_piece(self, row, column, piece):
+        self.board[row, column] = piece
+    def make_move(self, column):
+        # Validate the move
+        if column < 0 or column >= self.columns:
+            raise ValueError("Column index out of range.")
+        if not self.is_valid_move(column):
+            print(f"Column {column} is full. Move invalid.")
+            return False
+        
+        # Find the next open row in the column
+        row = self.get_next_open_row(column)
+        if row is None:
+            print(f"No open row found in column {column}.")
+            return False
+        
+        # Drop the piece on the board
+        self.drop_piece(row, column, self.current_player)
+        
+        # Create a move entry with standard Python int types
+        move_entry = {
+            "move_number": int(len(self.move_log) + 1),  # Cast to int
+            "player": int(self.current_player),          # Cast to int
+            "column": int(column),                       # Cast to int
+            "row": int(row),                             # Cast to int
+            "timestamp": datetime.datetime.now().isoformat()
+        }
+        
+        # Add the move to the log
+        self.move_log.append(move_entry)
+        
+        # Check for a win
+        if self.winning_move(self.current_player):
+            self.game_over = True
+        
+        # Switch players
+        self.current_player = 2 if self.current_player == 1 else 1
+        return True
+    def winning_move(self, piece):
+        for r in range(self.rows):
+            row = self.board[r]
+            for c in range(self.columns - 3):
+                if np.all(row[c:c+4] == piece):
+                    return True
+        for c in range(self.columns):
+            col = self.board[:, c]
+            for r in range(self.rows - 3):
+                if np.all(col[r:r+4] == piece):
+                    return True
+        for r in range(self.rows - 3):
+            for c in range(self.columns - 3):
+                window = [self.board[r+i, c+i] for i in range(4)]
+                if all(x == piece for x in window):
+                    return True
+        for r in range(3, self.rows):
+            for c in range(self.columns - 3):
+                window = [self.board[r-i, c+i] for i in range(4)]
+                if all(x == piece for x in window):
+                    return True
+        return False
+
+    def print_board(self):
+        for row in self.board:
+            print(row)
+        print("\n")
+    
+    def save_game_log(self, filename="connect4_game_log.json"):
+        with open(filename, "w") as f:
+            json.dump(self.move_log, f, indent=4)
+        print(f"Game log saved to {filename}")
