@@ -2,7 +2,11 @@ Heres, the update of my simulation i will explain using numpy. I dont really sur
 
 The first thing i do is upload my overall code, and suggest to change it to numpy. I past the prompt to 3 AI chat, which is OpenAI, GoogleAiStudio, and Grok. The only difference is i tell grok to used numpy and doesnt change the output and also doesnt change the effective or the eficient of the bot code. For the other bot i just tell it to used numpy. Overall, i get the better Win Result(based on how low the random bot win rate is) when using the grok, so thats the code i used instead. Heres my overall code change explanation.
 
+
+
 **Modify the Connect4Game Class**
+
+
 
 We'll change the board to a NumPy array and update all methods to use NumPy operations.
 
@@ -23,8 +27,14 @@ Key Changes:
 
 -```print_board``` and ```save_game_log``` remain largely unchanged since they don't heavily rely on board structure.
 
+**note:** after running the code, i got some error, so i also change the ```make_move``` function. the edit i've done is already in the code class above
+
+
+
 
 **Modify the Bot_class**
+
+
 
 
 After editing the board, the next thing the AI do is editing every bot. Below is the explanation of every bot uses.
@@ -57,9 +67,16 @@ Key Changes:
 
 -Updated ```score_position``` to use NumPy operations, including ```(window == piece).sum()``` for counting.
 
+**note:** i get some error after running the code in this part. so i add the code to make sure it was pass from numpy array. heres the code : 
+
+      ```
+      # Ensure window is a NumPy array
+      if not isinstance(window, np.ndarray):
+          window = np.array([window])
+      ```
+
 -Ensured all board accesses use ```board[row, col]```.
 
-After running the code, i find 2 bug in this Bot, here's what i changes after the bug
 
 4. [MCTSBot](MCTSBot_class)
 
@@ -76,7 +93,11 @@ Key Changes:
 -Updated ```simulate_random_game``` to use ```np.all(board[0] != 0)``` for checking if the board is full.
 
 
+
+
 **Update Simulation Function**
+
+
 
 
 The ```run_game```, ```simulate_pairing```, and ```run_simulation``` functions don't directly interact with the board beyond calling game and bot methods, so they remain unchanged. However, we'll update the fallback move logic in ```run_game``` to use NumPy indexing for consistency:
