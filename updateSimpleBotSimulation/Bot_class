@@ -1,0 +1,18 @@
+# Base Bot Class
+class Bot:
+    def __init__(self, player_id):
+        self.player_id = player_id
+
+    def choose_move(self, game):
+        raise NotImplementedError("This method should be implemented by subclasses.")
+
+    def format_move(self, game, column):
+        row = game.get_next_open_row(column)
+        move_entry = {
+            "move_number": len(game.move_log) + 1,
+            "player": self.player_id,
+            "column": column,
+            "row": row,
+            "timestamp": datetime.datetime.now().isoformat()
+        }
+        return move_entry
