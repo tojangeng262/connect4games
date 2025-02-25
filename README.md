@@ -2,7 +2,7 @@
 i try to analyze how to be unbeatable in 4 connect games. i play it with my friend and it feels good if you can always win everytime right?
 
 #Games_simulation
-i using python to simulated the games many times. the code is on the [connect4sims]() and the result is [connect4_games10juta.csv]()
+i using python to simulated the games many times. the code is [here](connect4sims) and the result is [here](connect4_games10juta.csv), with csv format.
 
 Here's my first approach for the data
 
@@ -20,4 +20,4 @@ The simulation of random game show that there are no huge difference in win rate
 
 
 
-It look like that the Win rate of player one (which in this case the player that move first) increace higher toward the centre of the board. D tile have the best percentage of WR that hold by player one (55,06%). So, the answer that we first learn is as player one, we should always play D tiles
+It look like that the Win rate of player one (which in this case the player that move first) increace higher toward the centre of the board. D tile have the best percentage of WR that hold by player one (55,06%). So, the first thing we learn is as player one, we should always play D tiles
